@@ -10,7 +10,7 @@ import CustomButtonGroup from './CustomButtonGroup';
 import CustomDateTimePicker from './CustomDateTimePicker';
 import CustomCheckboxGroup from './CustomCheckboxGroup';
 import CustomFileUpload from './CustomUploadFile';
-
+import CustomFileUpload2 from './CustomUploadFile2';
 const FormikControl = (props) => {
     const { control, ...rest } = props;
     switch (control) {
@@ -25,6 +25,7 @@ const FormikControl = (props) => {
         case 'customDateTimePicker': return <CustomDateTimePicker {...rest} />
         case 'customCheckboxGroup': return <CustomCheckboxGroup {...rest} />
         case 'customUploadFile': return <CustomFileUpload {...rest} />
+        case 'customUploadFile2': return <CustomFileUpload2 {...rest} />
         default: return null
     }
 }
