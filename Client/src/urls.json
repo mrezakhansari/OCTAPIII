@@ -35,5 +35,6 @@
 
     "Login": "/login",
     
-    "Home": "/"
+    "Home": "/",
+    "Register":"/Register"
 }

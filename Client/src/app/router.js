@@ -21,6 +21,7 @@ const LazyHatchPage = lazy(() => import("../views/pages/vessel/hatchPage"));
 const LazyUsersPage = lazy(() => import("../views/pages/usersPage"));
 const LazyLogout = lazy(() => import("../views/pages/logoutPage"));
 const LazyMaintainance = lazy(() => import("../views/pages/maintainance"));
+const LazyRegister = lazy(() => import("../views/pages/RegisterPage"));
 
 // Full Layout
 const LazyHome = lazy(() => import("../views/dashboard/ecommerceDashboard"));
@@ -29,12 +30,13 @@ const LazyHome = lazy(() => import("../views/dashboard/ecommerceDashboard"));
 const LazyErrorPage = lazy(() => import("../views/pages/error"));
 
 class Router extends Component {
-  state = {};
-  // componentWillMount() {
-  //   const user = auth.getCurrentUser();
+  state = {
+    jobRoutes: []
+  };
 
-  //   this.setState({ user });
-  // }
+  componentWillMount() {
+    this.setState({ jobRoutes: [{ path: '/register/job1company1', id: 0 }, { path: '/register/job2company2', id: 1 }] });
+  }
   render() {
     //console.log('from render')
     return (
@@ -76,15 +78,22 @@ class Router extends Component {
               </Suspense>
             )}
           />
-          <MainLayoutRoutes
-            exact
-            path={urls.Gate}
-            render={(matchprops) => (
-              <Suspense fallback={<Spinner />}>
-                <LazyOperationsPage {...matchprops} operations="Gate" />
-              </Suspense>
-            )}
-          />
+          {
+            this.state && this.state.jobRoutes.length > 0 &&
+            this.state.jobRoutes.map(item => {
+              return (
+                <MainLayoutRoutes
+                  exact
+                  path={item.path}
+                  render={(matchprops) => (
+                    <Suspense fallback={<Spinner />}>
+                      <LazyRegister {...matchprops} pathId={item.pathId} />
+                    </Suspense>
+                  )}
+                />
+              );
+            })
+          }
           <MainLayoutRoutes
             exact
             path={urls.DischargeStatistics}
@@ -205,17 +214,5 @@ class Router extends Component {
     );
   }
 }
-const mapStateToProps = (state) => {
-  return {
-    user: state.user
-  }
-}
 
-const mapDispatchToProps = dispatch => {
-  return {
-    // fetch: () => dispatch(fetchVoyagesTopTenOpen()),
-    // fetchOperator:(value)=>dispatch(fetchOperatorInfoBasedOnCode(value))
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Router);
+export default Router;

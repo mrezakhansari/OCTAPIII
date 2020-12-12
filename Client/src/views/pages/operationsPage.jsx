@@ -22,6 +22,9 @@ class operationsPage extends Component {
         return item.enName === a ? true : false;
       })
     );
+
+    if (!config.useAuthentication )
+    return ;
     //this.state.group = group;
 
     const { userType, permissions } = auth.getCurrentUser();
