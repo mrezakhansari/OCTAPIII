@@ -3,21 +3,21 @@ module.exports = {
     db: {
         mongo: {
             main: {
-                name: ,
+                name:'OCTAPI' ,
                 address: 'localhost:27017'
             },
             log: {
-                name: ,
+                name:'OCTAPI-LOG' ,
                 address: 'localhost:27017'
             }
         },
         sqlConfig: {
             driver: 'mssql',
             config: {
-                user: ,
-                password: ,
-                server: ,
-                database: ,
+                user: 'sa',
+                password:'8700823' ,
+                server: 'localhost',
+                database: 'OctapiDB',
                 pool: {
                     max: 10,
                     min: 0,
