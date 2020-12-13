@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, CardBody, Row, Col, Button } from "reactstrap";
+import { Card, CardBody, Row, Col, Button, Progress } from "reactstrap";
 import { LogIn } from "react-feather";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -9,10 +9,6 @@ import _ from "lodash";
 import * as auth from "../../services/authService"
 import FormikControl from "../../components/common/formik/FormikControl";
 
-import { getAreas } from "../../services/area";
-import ReactRevealText from 'react-reveal-text'
-
-
 toast.configure({ bodyClassName: "customFont" });
 
 //#region INITIAL VALUES ---------------------------------------------------
@@ -21,13 +17,16 @@ const initialValues = {
     firstName: "",
     lastName: "",
     email: "",
-    resumeFile: ""
+    mobileNo: "",
+    resumeFile: {}
 };
 
 const validationSchema = Yup.object({
     firstName: Yup.string().required("نام خود را وارد کنید"),
     lastName: Yup.string().required("نام خانوادگی خود را وارد کنید"),
-    email: Yup.string().required("ایمیل خود را وارد کنید")
+    email: Yup.string().email("ایمیل خود را درست وارد کنید").required('ایمیل خود را وارد کنید'),
+    mobileNo: Yup.string().required("موبایل خود را وارد کنید"),
+    resumeFile: Yup.mixed().test("", "رزومه ی خود را بارگزاری کنید", value => { if (value.name === undefined) return false; else return true; })
 });
 
 //#endregion ---------------------------------------------------------------
@@ -97,20 +96,19 @@ const RegisterPage = (props) => {
 
 
         <div className="container">
-            <Row className="full-height-vh">
+            <Row 
+           // className="full-height-vh"
+            >
                 <Col
                     xs="12"
                     className="d-flex align-items-center justify-content-center"
                 >
-                    <Card className=" text-center width-400 bg-transparency" >
+                    <Card className="text-center width-400 bg-transparency" >
                         <CardBody>
-                            <h2 className="white py-4">
-                               
-                                    OCTAPIIII {props.pathId}
-                               
+                            <h2 className="white py-10">
+                                OCTAPIIII {props.pathId}
                             </h2>
-                            <div className="pt-2">
-
+                            <div className="pt-1">
                                 <Formik
                                     initialValues={initialValues}
                                     validationSchema={validationSchema}
@@ -123,7 +121,7 @@ const RegisterPage = (props) => {
                                     enableReinitialize
                                 >
                                     {(formik) => {
-                                        //console.log("Formik props values", formik);
+                                        console.log("Formik props values", formik);
 
                                         return (
                                             <React.Fragment>
@@ -137,7 +135,8 @@ const RegisterPage = (props) => {
                                                                 name="firstName"
                                                                 id="firstName"
                                                                 className="rtl"
-                                                                placeholder="نام"
+                                                                //placeholder="نام"
+                                                                label="نام"
                                                             />
                                                         </Col>
                                                     </Row>
@@ -149,7 +148,8 @@ const RegisterPage = (props) => {
                                                                 id="lastName"
                                                                 name="lastName"
                                                                 className="rtl"
-                                                                placeholder="نام خانوادگی"
+                                                                //placeholder="نام خانوادگی"
+                                                                label="نام خانوادگی"
                                                             />
                                                         </Col>
                                                     </Row>
@@ -157,12 +157,13 @@ const RegisterPage = (props) => {
                                                         <Col md="12">
                                                             <FormikControl
                                                                 control="inputMaskDebounce"
-                                                                name="containerNo"
-                                                                mask="99999999999"
+                                                                name="mobileNo"
+                                                                mask="9999 999 9999"
                                                                 debounceTime={0}
-                                                                placeholder="شماره موبایل"
+                                                                label="شماره موبایل"
+                                                                placeholder="09xx xxx xxxx"
                                                                 className="ltr"
-                                                                onChange={() =>{}}
+                                                                onChange={() => { }}
                                                             />
                                                             {/* <div>{formik.values.mobileNo}</div> */}
                                                         </Col>
@@ -175,20 +176,29 @@ const RegisterPage = (props) => {
                                                                 id="email"
                                                                 name="email"
                                                                 className="ltr"
-                                                                placeholder="ایمیل"
+                                                                label="ایمیل"
+                                                            // placeholder="ایمیل"
                                                             />
                                                         </Col>
                                                     </Row>
                                                     <Row>
                                                         <Col md="12">
                                                             <FormikControl
-                                                                control="customUploadFile"
+                                                                control="customUploadFile2"
                                                                 type="file"
                                                                 id="resumeFile"
                                                                 name="resumeFile"
                                                                 className="ltr"
-                                                                placeholder="رزومه ی شما"
+                                                                //placeholder="رزومه ی شما"
+                                                                label="رزومه ی شما"
                                                             />
+                                                            <Progress max="100" color="success"
+                                                            // value={this.state.loaded} 
+                                                            >
+                                                                {
+                                                                    //Math.round(this.state.loaded, 2)
+                                                                }%
+                                                            </Progress>
                                                         </Col>
                                                     </Row>
                                                     <div className="form-actions center">

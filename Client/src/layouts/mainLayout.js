@@ -77,7 +77,7 @@ class MainLayout extends PureComponent {
                            toggleSidebarMenu={this.toggleSidebarMenu.bind(this)}
                            sidebarState={this.state.sidebarState}
                         />
-                        <main className = "scroll">{this.props.children}</main>
+                        <main >{this.props.children}</main>
                         <Footer />
                      </div>
                   )}

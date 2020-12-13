@@ -8,6 +8,7 @@ import MainLayoutRoutes from "../layouts/routes/mainRoutes";
 import LoginLayoutRoute from "../layouts/routes/loginRoutes"
 import ErrorLayoutRoute from "../layouts/routes/errorRoutes";
 import LogoutLayoutRoute from "../layouts/routes/logoutRoutes";
+import RegisterLayoutRoute from "../layouts/routes/registerLayoutRoute";
 import urls from '../urls.json'
 const LazyOperationTypePage = lazy(() => import("../views/pages/operationTypePage"));
 const LazyOperationsPage = lazy(() => import("../views/pages/operationsPage"));
@@ -82,7 +83,7 @@ class Router extends Component {
             this.state && this.state.jobRoutes.length > 0 &&
             this.state.jobRoutes.map(item => {
               return (
-                <MainLayoutRoutes
+                <RegisterLayoutRoute key={item.path}
                   exact
                   path={item.path}
                   render={(matchprops) => (

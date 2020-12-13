@@ -1,38 +1,95 @@
 import React from "react";
 import { Field } from "formik";
-import { FormGroup, Label, Progress } from "reactstrap";
+import { FormGroup, Label } from "reactstrap";
 import { Component } from "react";
+import { toast } from 'react-toastify';
 
 class CustomUploadFile2 extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedFile: null,
-            loaded: 0
+            selectedFile: null
         }
     }
+    checkMimeType = (event) => {
+        //getting file object
+        let files = event.target.files
+        //define message container
+        let err = ''
+        // list allow mime type
+        const types = ['application/pdf']
+        // loop access array
+        for (var x = 0; x < files.length; x++) {
+            // compare file type find doesn't matach
+            if (types.every(type => files[x].type !== type)) {
+                // create error message and assign to container   
+                //err += files[x].type + ' is not a supported format\n';
+                err = "نوع فایل وارد شده صحیح نمی باشد";
+                console.log(files[0].type)
+            }
+        };
+
+        if (err !== '') { // if message not same old that mean has error 
+            event.target.value = null; // discard selected file
+            console.log(err);
+            toast.error(err);
+            return false;
+        }
+        return true;
+    }
+
+    checkFileSize = (event) => {
+        let file = event.target.files[0]
+        let size = 5000000
+        let err = "";
+        if (file.size > size) {
+            //err += file.type + 'is too large, please pick a smaller file\n';
+            err="حداکثر اندازه ی فایل 50 مگابایت می باشد"
+        };
+        if (err !== '') {
+            toast.error(err);
+            event.target.value = null;
+            return false
+        }
+
+        return true;
+
+    }
+
+    onChangeHandler = (event, form) => {
+
+        let temp = event.target.files[0];
+        console.log("gooooooooooz")
+        if (this.checkMimeType(event) && this.checkFileSize(event)) {
+            // if return true allow to setState
+            this.setState({
+                selectedFile: temp
+            });
+            form.setFieldValue(this.props.name, temp);
+            // form.setFieldError(this.props.name, "");
+        }
+        else {
+            // form.setFieldError(this.props.name, "نوع فایل ورودی اشتباه هست");
+            // form.setFieldTouched(this.props.name,true);
+        }
+    }
+
     render() {
         const { className, label, name, placeholder, ...rest } = this.props;
         const defaultClass = className ? className : 'ltr';
         return (
             <FormGroup>
-                {label !== null && label !== "" && <Label for={name}>{label}</Label>}
+                {label !== null && label !== "" && <Label for={name} >{label}</Label>}
                 <Field name={name}>
                     {(fieldProps) => {
                         const { form, meta } = fieldProps;
-                        //console.log("Render props", props);
+
+                        console.log("Render props", form, meta);
                         return (
                             <div>
-                                {/* <div className="form-group files"> */}
-                                    {/* <label>Upload Your File </label> */}
-                                    <input type="file" className="form-control" multiple="" onChange={this.onChangeHandler} />
-                                {/* </div> */}
-                                {/* <div className="form-group"> */}
-
-                                    <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
-
-                                {/* </div> */}
-                                <button type="button" className="btn btn-success btn-block" onClick={this.onClickHandler}>بارگزاری</button>
+                                <div className={defaultClass + " files"}>
+                                    <input type="file" className="form-control"  onBlur={() => form.setFieldTouched(this.props.name, true)} onChange={(event) => this.onChangeHandler(event, form)} />
+                                </div>
                                 {/* <Select
                                     isMulti={isMulti ? true : false}
                                     className={isMulti ? `basic-single ${defaultClass}` : `basic-multi-select ${defaultClass}`}
