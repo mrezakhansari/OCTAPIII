@@ -13,7 +13,7 @@ module.exports = app => {
   app.use('/api/damage', require('./damage'));
   app.use('/api/act', require('./act'));
   app.use('/api/area', require('./area'));
-  app.use('/api/jobCompany',require('./jobCompany'))
+  app.use('/api/jobCompany',require('./jobCompany'));
 
   app.use(errorLoger);
 };

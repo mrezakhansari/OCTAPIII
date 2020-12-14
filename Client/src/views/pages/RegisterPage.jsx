@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import _ from "lodash";
 import * as auth from "../../services/authService"
 import FormikControl from "../../components/common/formik/FormikControl";
+import {registerNewApplicant} from '../../services/register/registerService';
 
 toast.configure({ bodyClassName: "customFont" });
 
@@ -18,7 +19,8 @@ const initialValues = {
     lastName: "",
     email: "",
     mobileNo: "",
-    resumeFile: {}
+    resumeFile: {},
+    loaded: 0
 };
 
 const validationSchema = Yup.object({
@@ -31,48 +33,46 @@ const validationSchema = Yup.object({
 
 //#endregion ---------------------------------------------------------------
 
-//#region SUBMIT FORMIK ----------------------------------------------------
 
-const onSubmit = async (values, props) => {
-
-    let parameters = {
-        username: values.username,
-        password: values.password,
-        area: values.selectedArea
-    };
-
-    try {
-        const { result, message } = await auth.login(_.pick(parameters, ["username", "password", "area"]));
-        if (!result)
-            return toast.error(message);
-        else {
-            const { state } = props.location;
-            //console.log(props, state);
-            //console.log('ssssssss', props.location.state);
-            //window.location = state && state.from ? state.from.pathname : "/";
-            if (state && state.from)
-                return props.history.replace(state && state.from ? state.from.pathname : '/', { ...state.from.state })
-            else
-                window.location = "/";
-        }
-    } catch (err) {
-        if (err.response && err.response.status === 401)
-            return toast.error(err.response.data.data[0])
-    }
-};
-//#endregion ---------------------------------------------------------------
 
 const RegisterPage = (props) => {
 
+    
     //#region STATE ------------------------------------------
 
     const pathId = props.pathId;
 
-    const [state, setState] = useState({
-    });
+    const [loaded, setState] = useState(0);
     const [disableSubmitButton, setDisableSubmitButton] = useState(false);
 
     //#endregion -----------------------------------------------------------
+
+
+    //#region SUBMIT FORMIK ----------------------------------------------------
+
+const onSubmit = async (values, props) => {
+
+    let parameters = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        mobileNo:values.mobileNo
+    };
+
+    const data = new FormData()
+    data.append('file', values.resumeFile);
+    registerNewApplicant({...parameters,...data}, {
+      onUploadProgress: ProgressEvent => {
+        setState({
+          loaded: (ProgressEvent.loaded / ProgressEvent.total * 100),
+        });
+      }
+    }).then(res => { // then print response status
+      console.log('res',res)
+    })
+};
+//#endregion ---------------------------------------------------------------
+
 
     //#region INITAL FUNCTIONS ---------------------------------------------
 
@@ -192,13 +192,9 @@ const RegisterPage = (props) => {
                                                                 //placeholder="رزومه ی شما"
                                                                 label="رزومه ی شما"
                                                             />
-                                                            <Progress max="100" color="success"
-                                                            // value={this.state.loaded} 
-                                                            >
-                                                                {
-                                                                    //Math.round(this.state.loaded, 2)
-                                                                }%
-                                                            </Progress>
+                                                            {/* {this.state.loaded && 
+                                                            <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
+                                                            } */}
                                                         </Col>
                                                     </Row>
                                                     <div className="form-actions center">

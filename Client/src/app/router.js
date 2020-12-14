@@ -3,6 +3,7 @@ import React, { Component, Suspense, lazy } from "react";
 import { BrowserRouter, Switch, Redirect } from "react-router-dom";
 import Spinner from "../components/spinner/spinner";
 import { connect } from "react-redux";
+import { getActivePaths } from '../../src/services/jobCompany/jobCompanyService';
 // import internal(own) modules
 import MainLayoutRoutes from "../layouts/routes/mainRoutes";
 import LoginLayoutRoute from "../layouts/routes/loginRoutes"
@@ -36,10 +37,16 @@ class Router extends Component {
   };
 
   componentWillMount() {
-    this.setState({ jobRoutes: [{ path: '/register/job1company1', id: 0 }, { path: '/register/job2company2', id: 1 }] });
+    getActivePaths().then(response => {
+      const { data } = response;
+      if (data.result) {
+        this.setState({ jobRoutes: data.data });
+      }
+    })
+    //this.setState({ jobRoutes: [{ path: '/register/job1company1', id: 0 }, { path: '/register/job2company2', id: 1 }] });
   }
   render() {
-    //console.log('from render')
+    console.log('from render', this.state)
     return (
       // Set the directory path if you are deplying in sub-folder
       <BrowserRouter basename="/">
@@ -83,12 +90,12 @@ class Router extends Component {
             this.state && this.state.jobRoutes.length > 0 &&
             this.state.jobRoutes.map(item => {
               return (
-                <RegisterLayoutRoute key={item.path}
+                <RegisterLayoutRoute key={item.Link}
                   exact
-                  path={item.path}
+                  path={`/register/${item.Link}`}
                   render={(matchprops) => (
                     <Suspense fallback={<Spinner />}>
-                      <LazyRegister {...matchprops} pathId={item.pathId} />
+                      <LazyRegister {...matchprops} pathId={item.JobCompanyId} />
                     </Suspense>
                   )}
                 />
