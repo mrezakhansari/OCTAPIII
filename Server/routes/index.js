@@ -1,7 +1,9 @@
 const errorLoger = require('../middleware/error-loger')
 module.exports = app => {
   require('./vessel')(app);
+  require('./register')(app);
   app.use('/', require('./home'));
+  app.use('/api/jobCompany',require('./jobCompany'));
   app.use('/app/log', require('./log'));
   app.use('/api/userType', require('./userType'));
   app.use('/api/user', require('./user'));
@@ -13,7 +15,7 @@ module.exports = app => {
   app.use('/api/damage', require('./damage'));
   app.use('/api/act', require('./act'));
   app.use('/api/area', require('./area'));
-  app.use('/api/jobCompany',require('./jobCompany'));
+
 
   app.use(errorLoger);
 };

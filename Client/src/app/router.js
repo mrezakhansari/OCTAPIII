@@ -36,13 +36,16 @@ class Router extends Component {
     jobRoutes: []
   };
 
-  componentWillMount() {
+  componentDidMount() {
     getActivePaths().then(response => {
       const { data } = response;
       if (data.result) {
         this.setState({ jobRoutes: data.data });
       }
     })
+  }
+  componentWillMount() {
+    
     //this.setState({ jobRoutes: [{ path: '/register/job1company1', id: 0 }, { path: '/register/job2company2', id: 1 }] });
   }
   render() {

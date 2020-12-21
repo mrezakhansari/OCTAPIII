@@ -18,6 +18,7 @@ class operationTypePage extends Component {
   }
 
   componentWillMount() {
+
     const group = _(operationGroups).value();
     if (!config.useAuthentication)
       this.setState({ group });

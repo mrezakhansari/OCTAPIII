@@ -5,6 +5,9 @@ module.exports = {
     JOBCOMPANY: {
         getActivePaths: LoadText(__dirname + '/jobCompany/get-active-paths.sql')
     },
+    REGISTERUSER:{
+        saveUserInfo:LoadText(__dirname + '/registerUser/save-user-info.sql')
+    },
     VOYAGE: {
         loadLastVoyages: LoadText(__dirname + '/voyage/load-last-voyages.sql'),
         getLoadUnloadStatisticsByVoyageId: LoadText(__dirname + '/voyage/get-load-unload-statistics-by-voyageid.sql')

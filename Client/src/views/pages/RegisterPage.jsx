@@ -8,8 +8,8 @@ import { toast } from "react-toastify";
 import _ from "lodash";
 import * as auth from "../../services/authService"
 import FormikControl from "../../components/common/formik/FormikControl";
-import {registerNewApplicant} from '../../services/register/registerService';
-
+import { registerNewApplicant } from '../../services/register/registerService';
+import axios from 'axios';
 toast.configure({ bodyClassName: "customFont" });
 
 //#region INITIAL VALUES ---------------------------------------------------
@@ -37,7 +37,7 @@ const validationSchema = Yup.object({
 
 const RegisterPage = (props) => {
 
-    
+
     //#region STATE ------------------------------------------
 
     const pathId = props.pathId;
@@ -50,28 +50,51 @@ const RegisterPage = (props) => {
 
     //#region SUBMIT FORMIK ----------------------------------------------------
 
-const onSubmit = async (values, props) => {
+    const onSubmit = async (values, props) => {
 
-    let parameters = {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-        mobileNo:values.mobileNo
+        let parameters = {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            email: values.email,
+            mobileNo: values.mobileNo,
+            sex: 'male',
+            pathId: props.pathId
+        };
+
+
+
+        const formData = new FormData();
+        formData.append('fileName', parameters.firstName); //text
+        formData.append('attachment', values.resumeFile); //bytes
+        formData.append('jsondataRequest', JSON.stringify(parameters)); //JSON
+        axios
+            .post('http://localhost:4001/api/register', formData)
+            .then(response => {
+                if (response.data.result) {
+                    // return props.history.replace('/RegisterSucceed', { from: props.location })
+                    return toast.success('doooooooooooool');
+                }
+                else {
+                    return toast.error('ارسال اطلاعات انجام نشد ، دوباره سعی کنید');
+                }
+            }).catch(error => { });
+
+        console.log('adfadfafadfadsfadf', formData, values.resumeFile)
+        // const data = new FormData()
+        // data.append('files', values.resumeFile);
+        // data.append('extra', parameters);
+
+        // registerNewApplicant(parameters, {
+        //     onUploadProgress: ProgressEvent => {
+        //         setState({
+        //             loaded: (ProgressEvent.loaded / ProgressEvent.total * 100),
+        //         });
+        //     }
+        // }).then(res => { // then print response status
+        //     console.log('res', res)
+        // })
     };
-
-    const data = new FormData()
-    data.append('file', values.resumeFile);
-    registerNewApplicant({...parameters,...data}, {
-      onUploadProgress: ProgressEvent => {
-        setState({
-          loaded: (ProgressEvent.loaded / ProgressEvent.total * 100),
-        });
-      }
-    }).then(res => { // then print response status
-      console.log('res',res)
-    })
-};
-//#endregion ---------------------------------------------------------------
+    //#endregion ---------------------------------------------------------------
 
 
     //#region INITAL FUNCTIONS ---------------------------------------------
@@ -96,8 +119,8 @@ const onSubmit = async (values, props) => {
 
 
         <div className="container">
-            <Row 
-           // className="full-height-vh"
+            <Row
+            // className="full-height-vh"
             >
                 <Col
                     xs="12"
