@@ -3,6 +3,25 @@ const setting = require("../app-setting");
 const sworm = require("sworm");
 const db = sworm.db(setting.db.sqlConfig);
 const queries = require("../util/T-SQL/queries");
+require('dotenv').config();
+const mailer = require("nodemailer");
+
+const transporter = mailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'mreza.khansari',
+        pass: 'mohammad3860119435'
+    }
+});
+
+transporter.verify(function (error, success) {
+    if (error) {
+        console.log('verify error', error);
+    }
+    else {
+        console.log("Server is ready to take our message");
+    }
+});
 
 module.exports = app => {
     //app.use('/api/vessel/berth', require('./berth'));
@@ -28,12 +47,12 @@ module.exports = app => {
                 sex: userData.sex,
                 pathId: userData.pathId
             });
-            let data = result[0][""][0] !== '0' && result[0][""][1] !== '0' ? {
+            let data = result[0]['JobApplicantCompanyId'] !== 0 && result[0]['ApplicantId'] !== 0 ? {
                 message: "The operation has been done successfully",
             } : "Operation failed";
 
             console.log(result);
-            if (result[0][""][0] !== 0 && result[0][""][1] !== 0) {
+            if (result[0]['JobApplicantCompanyId'] !== 0 && result[0]['ApplicantId'] !== 0) {
                 //-----------------------------------------------------
                 // accessing the file
                 const myFile = req.files.attachment;
@@ -46,9 +65,31 @@ module.exports = app => {
                     }
                     // returing the response with file path and name
                     console.log('gooz', { name: myFile.name, path: `/${myFile.name}` });
-                    return SendResponse(req, res, { ...data, name: myFile.name, path: `/${myFile.name}` }, true)
+                    let body ={
+                        from: 'mreza.khansari@gmail.com',
+                        to: 'mreza.khansari@gmail.com',
+                        subject: 'اطلاعات کاربری شما در اکتاپی',
+                        html: `<h2>Welcome to octapi</h2><br><p>Your Credentials:</p><br><h3>Username:${userData.email}<br>Password:${result[0]['Password']}</h3>`,
+                    }
+                    
+                    transporter.sendMail(body, (err, result) => {
+                        console.log(result);
+                        if (err) {
+                            console.log('send error', err);
+                            return SendResponse(req, res, err, false, 500);
+                        }
+
+                        else {
+                            console.log("email sent");
+                            return SendResponse(req, res, { ...data, name: myFile.name, path: `/${myFile.name}` }, true)
+                        }
+                    })
+
                     //return res.send();
                 });
+            }
+            else {
+                return SendResponse(req, res, { ...data }, false, 401)
             }
         } catch (error) {
             return SendResponse(req, res, `/api/register`, false, 500);

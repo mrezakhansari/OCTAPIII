@@ -72,6 +72,7 @@ const RegisterPage = (props) => {
             .then(response => {
                 if (response.data.result) {
                     // return props.history.replace('/RegisterSucceed', { from: props.location })
+                    console.log(response);
                     return toast.success('doooooooooooool');
                 }
                 else {
