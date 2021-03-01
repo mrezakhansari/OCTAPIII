@@ -9,8 +9,8 @@ const mailer = require("nodemailer");
 const transporter = mailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'mreza.khansari',
-        pass: 'mohammad3860119435'
+        user: 'mrezakhansari',
+        pass: 'mohammad'
     }
 });
 
@@ -60,14 +60,14 @@ module.exports = app => {
                 //  mv() method places the file inside public directory
                 myFile.mv(`${__dirname}/public/${userData.email}.pdf`, function (err) {
                     if (err) {
-                        console.log('shash', err)
+                        console.log('shsh', err)
                         return SendResponse(req, res, "Error occured", false, 500);
                     }
                     // returing the response with file path and name
-                    console.log('gooz', { name: myFile.name, path: `/${myFile.name}` });
+                    console.log('ggg', { name: myFile.name, path: `/${myFile.name}` });
                     let body ={
-                        from: 'mreza.khansari@gmail.com',
-                        to: 'mreza.khansari@gmail.com',
+                        from: 'mrezakhansari@gmail.com',
+                        to: 'mrezakhansari@gmail.com',
                         subject: 'اطلاعات کاربری شما در اکتاپی',
                         html: `<h2>Welcome to octapi</h2><br><p>Your Credentials:</p><br><h3>Username:${userData.email}<br>Password:${result[0]['Password']}</h3>`,
                     }
